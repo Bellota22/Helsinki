@@ -1,20 +1,21 @@
 import React from 'react'
 
-function Content({parts, exercises}) {
-  return (
+function Content(props) {
+
+    return (
     <>
         {
-            Object.keys(parts).map((key, index) => {
+            props.props.map((part, i) => {
                 return (
-                    <p key={index}>
-                        {parts[key]} {exercises[key]}
-                    </p>
+                    <p key={i}>{part.name} {part.exercises}</p>
                 )
             })
+
+           
         }
-        
     </>
   )
+
 }
 
 export default Content

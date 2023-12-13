@@ -1,11 +1,15 @@
 import React from 'react'
 
-function Total({excersises}) {
-    const sum = Object.values(excersises).reduce((a, b) => a + b, 0)
+function Total(props) {
+  const sum = props.props.reduce((acc, cur) => {
+      console.log(acc, cur)
+      return acc + cur.exercises
+  }, 0)
+
   return (
     <>
         {
-            sum
+          sum
         }
     </>
 
