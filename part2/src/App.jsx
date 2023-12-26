@@ -2,54 +2,61 @@ import React, { useEffect, useState } from 'react'
 import Filter from './components/Filter'
 import FormPerson from './components/FormPerson'
 import ShowData from './components/ShowData'
-import { getAll } from './api/persons'
-import { getWeather } from './api/weather'
+import { getAll, deletePerson, createPerson } from './api/persons'
 
 const App = () => {
-  const [country, setCountry] = useState([]);
-  const [filter, setFilter] = useState('');
-  const randomId = () => Math.floor(Math.random() * 100000);
+  const [persons, setPersons] = useState([])
+  const [ filter, setFilter ] = useState('')
+  const [ newName, setNewName ] = useState('')
+  const [ newNumber, setNewNumber ] = useState('')
+
   useEffect(() => {
-    const promise = getAll();
+    const promise = getAll()
+    promise.then(response => setPersons(response.data))
+  }
+  , [])
+  
 
-    promise.then(
-      response => {
-        response.data.map(person => (person.id = randomId()));
-        setCountry(response.data);
-      },
-      error => {
-        console.log(error);
-      }
-    );
-  }, []);
 
-  const filteredData = country.filter(person =>
-    person.name.common.toLowerCase().includes(filter.toLowerCase())
-  );
+  const handleClick = (event) => {
+    event.preventDefault()
+    const personObject = {name: newName, number: newNumber}
+    const sameName = persons.filter(person => person.name === newName)
+    if (sameName.length > 0) {
+      alert(`${newName} is already added to phonebook`)
+      setNewName('')
+      return
+    }
+    createPerson(personObject)
 
-  if (filteredData.length > 10) {
-    return (
-      <div>
-        <Filter filter={filter} setFilter={setFilter} />
-        <p>Too many matches, specify another filter</p>
-      </div>
-    );
+    setPersons([...persons, personObject])
+    setNewName('')
+    setNewNumber('')
+
+  }
+  const handleDelete = (id) => {
+    const person = persons.find(person => person.id === id)
+
+    if (window.confirm(`Delete ${person.name}?`)) {
+      deletePerson(id)
+      setPersons(persons.filter(person => person.id !== id))
+    }
+    
+    
   }
 
-  if (filteredData.length === 1) {
-    return (
-      <div>
-        <Filter filter={filter} setFilter={setFilter} />
-        <ShowData countryToShow={filteredData} />
-      </div>
-    );
-  }
+  const personsToShow = filter === '' ? persons : persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
+  console.log("🚀 ~ file: App.jsx:37 ~ App ~ personsToShow:", personsToShow)
+
   
   return (
     <div>
       <Filter filter={filter} setFilter={setFilter} />
-      <ShowData countryToShow={filteredData} />
+      <FormPerson newName={newName} setNewName={setNewName} newNumber={newNumber} setNewNumber={setNewNumber} handleClick={handleClick} />
+      <ShowData personsToShow={personsToShow} handleDelete={handleDelete} />
+      
     </div>
-  );
-};
+  )
+}
+
 export default App

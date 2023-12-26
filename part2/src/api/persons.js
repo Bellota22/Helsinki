@@ -1,11 +1,15 @@
 import axios from 'axios'
 
 
-
 export const getAll = () => {
-    return axios.get('https://studies.cs.helsinki.fi/restcountries/api/all')
+    return axios.get('http://localhost:3001/persons')
 }
 
-export const getName = (name) => {
-    return axios.get(`https://studies.cs.helsinki.fi/restcountries/api/name/${name}`)
+export const deletePerson = async (id) => {
+    return axios.delete(`http://localhost:3001/persons/${id}`)
+
+}
+
+export const createPerson = (personObject) => {
+    return axios.post('http://localhost:3001/persons', personObject)
 }
