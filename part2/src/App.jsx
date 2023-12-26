@@ -6,10 +6,15 @@ const App = () => {
     { name: 'Arto Hellas' }
   ]) 
   const [ newName, setNewName ] = useState('')
+
   const handleClick = (event) => {
     event.preventDefault()
-    const personObject = {
-      name: newName
+    const personObject = {name: newName}
+    const sameName = persons.filter(person => person.name === newName)
+    if (sameName.length > 0) {
+      alert(`${newName} is already added to phonebook`)
+      setNewName('')
+      return
     }
     setPersons([...persons, personObject])
     setNewName('')
