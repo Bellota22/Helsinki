@@ -3,7 +3,7 @@ import Filter from './components/Filter'
 import FormPerson from './components/FormPerson'
 import ShowData from './components/ShowData'
 import { getAll } from './api/persons'
-import axios from 'axios'
+import { getWeather } from './api/weather'
 
 const App = () => {
   const [country, setCountry] = useState([]);
