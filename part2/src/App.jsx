@@ -6,44 +6,50 @@ import { getAll } from './api/persons'
 import axios from 'axios'
 
 const App = () => {
-  const [persons, setPersons] = useState([])
-  const [ filter, setFilter ] = useState('')
-  const [ newName, setNewName ] = useState('')
-  const [ newNumber, setNewNumber ] = useState('')
-
+  const [country, setCountry] = useState([]);
+  const [filter, setFilter] = useState('');
+  const randomId = () => Math.floor(Math.random() * 100000);
   useEffect(() => {
-    const promise = getAll()
-    promise.then(response => setPersons(response.data))
+    const promise = getAll();
+
+    promise.then(
+      response => {
+        response.data.map(person => (person.id = randomId()));
+        setCountry(response.data);
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }, []);
+
+  const filteredData = country.filter(person =>
+    person.name.common.toLowerCase().includes(filter.toLowerCase())
+  );
+
+  if (filteredData.length > 10) {
+    return (
+      <div>
+        <Filter filter={filter} setFilter={setFilter} />
+        <p>Too many matches, specify another filter</p>
+      </div>
+    );
   }
-  , [])
 
-
-
-  const handleClick = (event) => {
-    event.preventDefault()
-    const personObject = {name: newName, number: newNumber}
-    const sameName = persons.filter(person => person.name === newName)
-    if (sameName.length > 0) {
-      alert(`${newName} is already added to phonebook`)
-      setNewName('')
-      return
-    }
-    setPersons([...persons, personObject])
-    setNewName('')
-    setNewNumber('')
+  if (filteredData.length === 1) {
+    return (
+      <div>
+        <Filter filter={filter} setFilter={setFilter} />
+        <ShowData countryToShow={filteredData} />
+      </div>
+    );
   }
-
-  const personsToShow = filter === '' ? persons : persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
-
- 
+  
   return (
     <div>
       <Filter filter={filter} setFilter={setFilter} />
-      <FormPerson newName={newName} setNewName={setNewName} newNumber={newNumber} setNewNumber={setNewNumber} handleClick={handleClick} />
-      <ShowData personsToShow={personsToShow} />
-      
+      <ShowData countryToShow={filteredData} />
     </div>
-  )
-}
-
+  );
+};
 export default App

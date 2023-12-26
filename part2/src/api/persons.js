@@ -1,8 +1,11 @@
 import axios from 'axios'
 
-export const promise = axios.get('http://localhost:3001/persons')
 
 
 export const getAll = () => {
-    return axios.get('http://localhost:3001/persons')
+    return axios.get('https://studies.cs.helsinki.fi/restcountries/api/all')
+}
+
+export const getName = (name) => {
+    return axios.get(`https://studies.cs.helsinki.fi/restcountries/api/name/${name}`)
 }
